@@ -54,12 +54,8 @@ def signup(request):
             error_message = "Email required!"
         elif len(email) < 5:
             error_message = "Emial must be 5 characters long" 
-        elif not password: 
-            error_message = "Password required!"
-        elif len(password) < 6:
-            error_message = "Password must be 6 characters long"
-        
-            
+        elif Customer.itExists():
+            error_message = "Email Address already registered!"          
                     
         # saving
         if not error_message:
