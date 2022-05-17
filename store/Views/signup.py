@@ -1,42 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password, check_password
-from .models.product import Product
-from .models.category import Category
-from .models.customer import Customer
+from django.contrib.auth.hashers import make_password
+from store.models.customer import Customer
 from django.views import View
 
-# print(make_password('1234'))
-# print(check_password('1234','pbkdf2_sha256$320000$BXfmD5ytn1Fb37zTnrcBCV$OOOtkKATefBN22pXi6m9iVnw6G236Vt17vurE2gXJqg='))
-
-# Create your views here.
-# def index(request):
-#     return HttpResponse('<H1> Index Page </H1>')
-
-def index(request):
-    products = None
-    categories = Category.get_all_categories();
-    # print(products)
-    # return render(request, 'orders/order.html')
-    categoryID = (request.GET.get('category'))
-    if categoryID:
-        products = Product.get_all_products_by_categoryid(categoryID)
-    else:
-        products = Product.get_all_products();
-    data = {}
-    data['products'] = products
-    data['categories'] = categories
-    return render(request, 'index.html', data)
-   
 class Signup(View):
     
-    def signup(self, request):
-        if (request.method == 'GET'):
-            return render(request, 'signup.html')
-        else:
-            return registerUser(request) 
+    def get(self, request):
+        return render(request, 'signup.html') 
         
-    def registerUser(self, request):
+    def post(self, request):
         postData = request.POST
     
         first_name = postData.get('firstname')
@@ -62,7 +34,7 @@ class Signup(View):
                             email = email, 
                             password = password)
             
-        error_message = validateCustomer(customer)      
+        error_message = self.validateCustomer(customer)      
                         
         # saving
         
@@ -102,25 +74,5 @@ class Signup(View):
             error_message = "Email Address already registered!" 
         
         return error_message       
-                
-class Login(View):
-    def get(self, request):
-        return render(request, 'login.html')
-    
-    def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        customer = Customer.get_customer_by_email(email)
-        error_message = None
-        if customer:
-            flag = check_password(password, customer.password)
-            if flag:
-                return redirect('homepage')
-            else:
-                error_message = 'Email or Password Invalid!'
-        else:
-            error_message = 'Email or Password Invalid!'
-        print(email, password)
-        return render(request, 'login.html', {'error': error_message})
-    
+
        
