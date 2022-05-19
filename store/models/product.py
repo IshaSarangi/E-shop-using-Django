@@ -9,6 +9,10 @@ class Product(models.Model):
     image = models.ImageField(upload_to = 'uploads/products/')
     
     @staticmethod
+    def get_products_by_id(ids):
+        return Product.objects.filter(id__in=ids)   # id__in will return all the ids of the given list
+    
+    @staticmethod
     def get_all_products():
         return Product.objects.all()
     
@@ -17,4 +21,4 @@ class Product(models.Model):
         if category_id:
             return Product.objects.filter(category = category_id)
         else:
-            return Product.get_all_products();
+            return Product.get_all_products()
