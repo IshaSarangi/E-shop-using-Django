@@ -2,8 +2,55 @@
 
 {% block content %}
 
+{% load cart %}
+
 <div class="container">
-    <h1>Cart Page</h1>
+    {% comment %} <h1>My Cart</h1> {% endcomment %}
+    <div class="border rounded p-4 m-4">
+        {% comment %} {{products}} {% endcomment %}
+        <p class="display-5 text-center">My Cart</p>
+        <hr>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sr. No. </th>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quanity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for product in products %}
+                <tr>
+                    <td>{{forloop.counter}}</td>                   
+                    <td><img style="height:80px" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.price}}</td>
+                    <td>{{product|cart_quantity:request.session.cart}}</td>     {% comment %} product->argument, cart quanity function call, request session sent for cart object which was saved in the session  {% endcomment %}
+                    <td>{{product|price_total:request.session.cart}}</td>
+                </tr>
+                {% endfor %}
+
+                <tfoot>
+                    <tr>
+                        <th colspan="3"></th>
+                        <th class="" colspan="">Total</th>
+                        <th>{{products|total_cart_price:request.session.cart}}</th>
+                    </tr>
+                </tfoot>
+
+            </tbody>
+        </table>
+        {% comment %} <hr> {% endcomment %}
+        <div class="m-3 p-3">
+            <a href="#" class="btn btn-outline-danger border rounded col-lg-2 float-end">Check out</a>
+        </div>
+
+    </div>
 </div>
 
 {% endblock %}
