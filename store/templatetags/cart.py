@@ -28,3 +28,4 @@ def total_cart_price(products, cart):
     for p in products:
         sum += price_total(p, cart)
     return sum
+
